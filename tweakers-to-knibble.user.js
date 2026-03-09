@@ -1,7 +1,9 @@
 // ==UserScript==
 // @name         Tweakers Pricewatch to Knibble
 // @namespace    https://github.com/AnonymousWP/tweakers-to-knibble
-// @version      1.0.2
+// @updateURL    https://raw.githubusercontent.com/AnonymousWP/tweakers-to-knibble/main/tweakers-to-knibble.user.js
+// @downloadURL  https://raw.githubusercontent.com/AnonymousWP/tweakers-to-knibble/main/tweakers-to-knibble.user.js
+// @version      1.0.3
 // @description  Replaces the Tweakers Pricewatch button with a link to Knibble
 // @author       Anonymoussaurus/AnonymousWP
 // @match        https://*.tweakers.net/*
