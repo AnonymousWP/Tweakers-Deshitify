@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Tweakers Pricewatch to Knibble
 // @namespace    https://github.com/AnonymousWP/tweakers-to-knibble
-// @version      1.0.0
+// @version      1.0.1
 // @description  Replaces the Tweakers Pricewatch button with a link to Knibble
 // @author       Anonymoussaurus/AnonymousWP
 // @match        *://tweakers.net/*
@@ -15,34 +15,32 @@
     const KNIBBLE_URL = 'https://knibble.nl';
 
     /**
-     * Modifies the Pricewatch button to redirect to Knibble
+     * Modifies all Pricewatch buttons to redirect to Knibble
      */
     function modifyPricewatchButton() {
-        // Most specific selector first - the exact link in the main menu
-        const exactButton = document.querySelector('a[href="https://tweakers.net/pricewatch/"]');
-        if (exactButton) {
-            replaceButtonBehavior(exactButton);
-            return true;
+        let found = false;
+
+        // Most specific selector - the exact link in the main menu
+        const exactButtons = document.querySelectorAll('a[href="https://tweakers.net/pricewatch/"]');
+        if (exactButtons.length > 0) {
+            exactButtons.forEach(button => {
+                replaceButtonBehavior(button);
+                found = true;
+            });
+            return found;
         }
 
-        // Fallback to other selectors if needed
-        const selectors = [
-            'a[href*="/pricewatch/"]',
-            'button[data-action="pricewatch"]',
-            'a[data-action="pricewatch"]',
-            'button.pricewatch',
-            'a.pricewatch'
-        ];
-
-        for (const selector of selectors) {
-            const element = document.querySelector(selector);
-            if (element) {
-                replaceButtonBehavior(element);
-                return true;
-            }
+        // Also check for www variant
+        const wwwButtons = document.querySelectorAll('a[href="https://www.tweakers.net/pricewatch/"]');
+        if (wwwButtons.length > 0) {
+            wwwButtons.forEach(button => {
+                replaceButtonBehavior(button);
+                found = true;
+            });
+            return found;
         }
 
-        return false;
+        return found;
     }
 
     /**
