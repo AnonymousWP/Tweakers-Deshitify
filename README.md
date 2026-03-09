@@ -1,6 +1,6 @@
 # Tweakers Pricewatch to Knibble
 
-A user-script that replaces the Tweakers Pricewatch button with a link to Knibble.
+A user-script that replaces the Tweakers Pricewatch button with a link to Knibble. This allows users to quickly access Knibble's price comparison features directly from Tweakers.net. Reason/context is here: <https://gathering.tweakers.net/forum/list_messages/2325310>. A lot of Tweakers, including me, are not satisfied with how critics have been ignored for the most part. The slide-in is hard to work with and doesn't make much sense from a UX-perspective, even after the small changes. Future plans are also not sufficient for me. Reason for me to look for something else. I then found Knibble. Just as detailed, but offers many more product categories as well.
 
 ## Installation
 
