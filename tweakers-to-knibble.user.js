@@ -6,7 +6,7 @@
 // @updateURL    https://raw.githubusercontent.com/AnonymousWP/tweakers-to-knibble/main/tweakers-to-knibble.user.js
 // @downloadURL  https://raw.githubusercontent.com/AnonymousWP/tweakers-to-knibble/main/tweakers-to-knibble.user.js
 // @supportURL   https://github.com/AnonymousWP/Tweakers-Pricewatch-to-Knibble/issues
-// @version      1.0.4
+// @version      1.0.5
 // @description  Replaces the Tweakers Pricewatch button with a link to Knibble instead, without adding new buttons or elements to the page.
 // @match        https://*.tweakers.net/*
 // @license      GPL-3.0
