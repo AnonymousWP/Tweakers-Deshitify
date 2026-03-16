@@ -15,7 +15,7 @@ Adds a [Knibble](https://knibble.nl/) button next to the existing Pricewatch but
 - Works on all Tweakers.net pages
 - Handles dynamically loaded content and shadow DOM
 
-**Install:** [tweakers-knibble-button.user.js](https://raw.githubusercontent.com/AnonymousWP/Tweakers-Deshitify/main/tweakers-knibble-button.user.js)
+**Install:** [tweakers-knibble-button.user.js](https://raw.githubusercontent.com/AnonymousWP/Tweakers-Deshitify/master/tweakers-knibble-button.user.js)
 
 ---
 
@@ -30,7 +30,7 @@ Shows all product specifications inline on the Pricewatch product page, without 
 - Reuses Tweakers' own CSS for a native look and feel
 - Works on all Pricewatch product pages
 
-**Install:** [tweakers-inline-specs.user.js](https://raw.githubusercontent.com/AnonymousWP/Tweakers-Deshitify/main/tweakers-inline-specs.user.js)
+**Install:** [tweakers-inline-specs.user.js](https://raw.githubusercontent.com/AnonymousWP/Tweakers-Deshitify/master/tweakers-inline-specs.user.js)
 
 ---
 
