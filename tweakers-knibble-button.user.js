@@ -3,8 +3,8 @@
 // @author       Anonymoussaurus/AnonymousWP
 // @namespace    https://github.com/AnonymousWP/Tweakers-Deshitify/
 // @homepageURL  https://github.com/AnonymousWP/Tweakers-Deshitify
-// @updateURL    https://raw.githubusercontent.com/AnonymousWP/Tweakers-Deshitify/main/tweakers-knibble-button.user.js
-// @downloadURL  https://raw.githubusercontent.com/AnonymousWP/Tweakers-Deshitify/main/tweakers-knibble-button.user.js
+// @updateURL    https://raw.githubusercontent.com/AnonymousWP/Tweakers-Deshitify/master/tweakers-knibble-button.user.js
+// @downloadURL  https://raw.githubusercontent.com/AnonymousWP/Tweakers-Deshitify/master/tweakers-knibble-button.user.js
 // @supportURL   https://github.com/AnonymousWP/Tweakers-Deshitify/issues
 // @version      2.0.1
 // @description  Adds a Knibble button next to the Tweakers Pricewatch button.
