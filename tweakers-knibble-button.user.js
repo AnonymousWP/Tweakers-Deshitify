@@ -9,7 +9,10 @@
 // @version      2.0.0
 // @description  Adds a Knibble button next to the Tweakers Pricewatch button.
 // @match        https://*.tweakers.net/*
+// @run-at       document-start
+// @icon         https://tweakers.net/favicon.ico
 // @license      GPL-3.0
+// @grant        none
 // ==/UserScript==
 
 (function() {
