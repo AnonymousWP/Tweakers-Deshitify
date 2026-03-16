@@ -6,7 +6,7 @@
 // @updateURL    https://raw.githubusercontent.com/AnonymousWP/Tweakers-Deshitify/main/tweakers-inline-specs.user.js
 // @downloadURL  https://raw.githubusercontent.com/AnonymousWP/Tweakers-Deshitify/main/tweakers-inline-specs.user.js
 // @supportURL   https://github.com/AnonymousWP/Tweakers-Deshitify/issues
-// @version      1.0.0
+// @version      1.0.1
 // @description  Shows all product specifications inline on the Pricewatch page, without a slide-in.
 // @match        https://tweakers.net/pricewatch/*/*.html
 // @run-at       document-start
