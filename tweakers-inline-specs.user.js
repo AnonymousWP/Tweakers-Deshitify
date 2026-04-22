@@ -6,7 +6,7 @@
 // @updateURL    https://raw.githubusercontent.com/AnonymousWP/Tweakers-Deshitify/master/tweakers-inline-specs.user.js
 // @downloadURL  https://raw.githubusercontent.com/AnonymousWP/Tweakers-Deshitify/master/tweakers-inline-specs.user.js
 // @supportURL   https://github.com/AnonymousWP/Tweakers-Deshitify/issues
-// @version      1.0.1
+// @version      1.1.0
 // @description  Shows all product specifications inline on the Pricewatch page, without a slide-in.
 // @match        https://tweakers.net/pricewatch/*/*.html
 // @run-at       document-start
@@ -20,14 +20,15 @@
 
     /* ─────────────────────────────────────────────────────────────────
        Phase 1 – Suppress slide-in before any paint (document-start).
-       Uses visibility/opacity instead of display:none so Tweakers'
-       JS still renders the spec content into the hidden element.
+       Uses clip-path + opacity instead of display:none / visibility:hidden
+       so Tweakers' JS still renders spec content into the hidden element
+       and IntersectionObserver (incl. v2 trackVisibility) still fires.
     ───────────────────────────────────────────────────────────────── */
     const earlyStyle = document.createElement('style');
     earlyStyle.id = 'twk-inline-specs-hide';
     earlyStyle.textContent = `
         twk-product-detail-page-slide-in {
-            visibility: hidden !important;
+            clip-path: inset(0 0 100% 0) !important;
             opacity: 0 !important;
             pointer-events: none !important;
             animation: none !important;
@@ -182,6 +183,33 @@
     }
 
     /* ─────────────────────────────────────────────────────────────────
+       Shadow-piercing querySelector helpers.
+       Standard querySelector / MutationObserver cannot cross shadow
+       boundaries, so these walk every element's shadowRoot recursively.
+    ───────────────────────────────────────────────────────────────── */
+    function deepFind(selector, root = document) {
+        const found = root.querySelector(selector);
+        if (found) return found;
+        for (const el of root.querySelectorAll('*')) {
+            if (el.shadowRoot) {
+                const result = deepFind(selector, el.shadowRoot);
+                if (result) return result;
+            }
+        }
+        return null;
+    }
+
+    function deepFindAll(selector, root = document) {
+        const results = Array.from(root.querySelectorAll(selector));
+        for (const el of root.querySelectorAll('*')) {
+            if (el.shadowRoot) {
+                results.push(...deepFindAll(selector, el.shadowRoot));
+            }
+        }
+        return results;
+    }
+
+    /* ─────────────────────────────────────────────────────────────────
        Release the scroll-lock and inert state the slide-in imposes
        on the rest of the page when it is active.
     ───────────────────────────────────────────────────────────────── */
@@ -196,11 +224,21 @@
     ───────────────────────────────────────────────────────────────── */
     async function init() {
         // Find the button that triggers the specs slide-in.
-        const triggerBtn =
-            document.querySelector('[data-target-section="specifications"]') ||
-            document.querySelector('.slide-in-buttons-container button');
-
-        if (!triggerBtn) {
+        // It may live inside a web component's shadow root, so use a
+        // shadow-piercing RAF poll instead of a plain querySelector.
+        let triggerBtn;
+        try {
+            triggerBtn = await new Promise((resolve, reject) => {
+                const start = Date.now();
+                (function poll() {
+                    const el = deepFind('[data-target-section="specifications"]');
+                    if (el) return resolve(el);
+                    if (Date.now() - start > 8000)
+                        return reject(new Error('Trigger button not found'));
+                    requestAnimationFrame(poll);
+                })();
+            });
+        } catch (err) {
             console.warn('[Inline Specs] Geen "Bekijk alle specificaties"-knop gevonden.');
             return;
         }
@@ -226,7 +264,17 @@
             const slideIn = await waitForElement('twk-product-detail-page-slide-in');
 
             // Wait until Tweakers has rendered the spec groups inside the slide-in.
-            const specGroups = await waitForElements('details.spec-group', slideIn);
+            // Use deepFindAll so we can pierce any shadow root on the slide-in host.
+            const specGroups = await new Promise((resolve, reject) => {
+                const start = Date.now();
+                (function poll() {
+                    const els = deepFindAll('details.spec-group', slideIn);
+                    if (els.length) return resolve(els);
+                    if (Date.now() - start > 10000)
+                        return reject(new Error('Timeout waiting for "details.spec-group"'));
+                    requestAnimationFrame(poll);
+                })();
+            });
 
             injectStyles();
 
