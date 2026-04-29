@@ -6,7 +6,7 @@
 // @updateURL    https://raw.githubusercontent.com/AnonymousWP/Tweakers-Deshitify/master/tweakers-knibble-button.user.js
 // @downloadURL  https://raw.githubusercontent.com/AnonymousWP/Tweakers-Deshitify/master/tweakers-knibble-button.user.js
 // @supportURL   https://github.com/AnonymousWP/Tweakers-Deshitify/issues
-// @version      2.0.1
+// @version      2.0.2
 // @description  Adds a Knibble button next to the Tweakers Pricewatch button.
 // @match        https://*.tweakers.net/*
 // @run-at       document-start
@@ -36,12 +36,14 @@
      * Runs addKnibbleButton against both the light DOM and every twk-site-menu shadow root
      */
     function addKnibbleButton() {
-        findPricewatchLinks(document).forEach(insertKnibbleButton);
-
-        // The nav may also live inside a <twk-site-menu> shadow root
+        // Scope to twk-site-menu only: use shadow root when available,
+        // fall back to light DOM for elements not yet upgraded.
+        // This avoids matching Pricewatch links in page content (e.g. homepage category section).
         document.querySelectorAll('twk-site-menu').forEach(el => {
             if (el.shadowRoot) {
                 findPricewatchLinks(el.shadowRoot).forEach(insertKnibbleButton);
+            } else {
+                findPricewatchLinks(el).forEach(insertKnibbleButton);
             }
         });
     }
