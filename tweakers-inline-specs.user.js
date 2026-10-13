@@ -6,7 +6,7 @@
 // @updateURL    https://raw.githubusercontent.com/AnonymousWP/Tweakers-Deshitify/master/tweakers-inline-specs.user.js
 // @downloadURL  https://raw.githubusercontent.com/AnonymousWP/Tweakers-Deshitify/master/tweakers-inline-specs.user.js
 // @supportURL   https://github.com/AnonymousWP/Tweakers-Deshitify/issues
-// @version      1.1.0
+// @version      1.1.1
 // @description  Shows all product specifications inline on the Pricewatch page, without a slide-in.
 // @match        https://tweakers.net/pricewatch/*/*.html
 // @run-at       document-start
@@ -219,6 +219,42 @@
         document.documentElement.classList.remove('modal-open');
     }
 
+    /* Remove the #detail-view:* hash Tweakers adds when the slide-in opens. */
+    function restoreHash(priorHash) {
+        if (location.hash === priorHash || !location.hash.startsWith('#detail-view:')) return;
+        history.replaceState(history.state, '', location.pathname + location.search + priorHash);
+    }
+
+    /* Tweakers may set the hash at any moment while the slide-in opens/closes, so intercept
+       history writes and hashchange rather than cleaning up once. Returns a stop function. */
+    function guardHash(priorHash) {
+        const origPush = history.pushState;
+        const origReplace = history.replaceState;
+        const strip = (url) => {
+            if (url == null) return url;
+            const u = new URL(url, location.href);
+            if (!u.hash.startsWith('#detail-view:')) return url;
+            u.hash = priorHash;
+            return u.href;
+        };
+        history.pushState = function (state, title, url) {
+            return origPush.call(this, state, title, strip(url));
+        };
+        history.replaceState = function (state, title, url) {
+            return origReplace.call(this, state, title, strip(url));
+        };
+        const onChange = () => restoreHash(priorHash);
+        window.addEventListener('hashchange', onChange);
+        window.addEventListener('popstate', onChange);
+        return () => {
+            history.pushState = origPush;
+            history.replaceState = origReplace;
+            window.removeEventListener('hashchange', onChange);
+            window.removeEventListener('popstate', onChange);
+            restoreHash(priorHash);
+        };
+    }
+
     /* ─────────────────────────────────────────────────────────────────
        Main
     ───────────────────────────────────────────────────────────────── */
@@ -251,6 +287,11 @@
             console.warn('[Inline Specs] Geen .popular-specs-container gevonden.');
             return;
         }
+
+        const priorHash = location.hash;
+        const stopGuard = guardHash(priorHash);
+        // Late hash writes can follow the slide-in being closed.
+        const finish = () => setTimeout(stopGuard, 1500);
 
         // Silently open the slide-in (invisible due to early CSS).
         triggerBtn.click();
@@ -297,6 +338,8 @@
 
             // Fully close and clean up the slide-in.
             releaseModalLock(slideIn);
+            restoreHash(priorHash);
+            finish();
 
             // Hide "Belangrijkste specificaties" — redundant now that the full
             // list is shown inline.
@@ -332,6 +375,8 @@
             });
 
         } catch (err) {
+            restoreHash(priorHash);
+            finish();
             console.warn('[Inline Specs] Ophalen mislukt:', err.message);
         }
     }
